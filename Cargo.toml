@@ -1,0 +1,14 @@
+[package]
+name = "instant-ping"
+version = "0.1.0"
+authors = ["Michiel Missotten <michiel@ouistock.fr>"]
+
+[dependencies]
+actix-web = "0.7"
+askama = "0.7"
+
+openssl = { version = "0.10", features = ["vendored"] }
+openssl-probe = "0.1.2"
+
+[build-dependencies]
+askama = "0.7"
