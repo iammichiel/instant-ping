@@ -1,25 +1,41 @@
 {% extends "main.html" %}
 
 {% block body %}
-
-    <h2>Hello from the template </h2>
+    <a href="/">
+        <h1>Check my domain</h1>
+    </a>
 
     <form action="/" method="post">
-        <input name="domain" type="text" placeholder="www.google.com">
+        <input name="domain" type="text" placeholder="www.google.com" required>
 
         <input type="submit" value="check">
     </form>
 
     {% match certificate %}
         {% when Some with (cert) %}
-            <dt>Domain</dt>
-            <dd>{{ cert.domain }}</dd>
+            <div class="result">
+                {# <!-- <dt>Subject name : </dt>
+                <dd>
+                    {% for entry in cert.subject_name().entries() %}
+                        <li>{{ entry }}</li>
+                    {% endfor %}
+                </dd> -->
+                #}
+                
+                
+                <dt>Issuer name : </dt>
+                {% for entry in cert.issuer_name().entries() %}
+                    <li>
+                        {# <strong>{{ entry.object() }}</strong> : {{ entry.data().as_utf8().unwrap() }} #}
+                    </li>
+                {% endfor %}
+            
+                <dt>Not before : </dt>
+                <dd>{{ cert.not_before() }}</dd>
 
-            <dt>Not before : </dt>
-            <dd>{{ cert.not_before }}</dd>
-
-            <dt>Not after</dt>
-            <dd>{{ cert.not_after }}</dd>
+                <dt>Not after</dt>
+                <dd>{{ cert.not_after() }}</dd>
+            </div>
         {% when None %}
     {% endmatch %}
 {% endblock %}

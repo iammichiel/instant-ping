@@ -4,8 +4,10 @@ version = "0.1.0"
 authors = ["Michiel Missotten <michiel@ouistock.fr>"]
 
 [dependencies]
+actix = "0.7"
 actix-web = "0.7"
 askama = "0.7"
+futures = "0.1.23"
 
 dotenv = "0.13"
 
