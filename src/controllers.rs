@@ -2,8 +2,6 @@ use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 use actix_web::Form;
 
-use askama::Template;
-
 use openssl::ssl::SslConnector;
 use openssl::ssl::SslMethod;
 use openssl::x509::X509;
@@ -14,11 +12,6 @@ pub struct DomainForm {
     domain: String,
 }
 
-#[derive(Template)] 
-#[template(path = "index.html")]
-struct IndexTemplate<> {
-    certificate: Option<X509>, 
-}
 
 /**
  * Show the index page. 
@@ -43,6 +36,20 @@ pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResp
     //         println!("{} : {}", entry.object(), entry.data().as_utf8().unwrap());
     //     })
     // }
+
+
+
+    let mut reg = Handlebars::new();
+    // render without register
+    println!(
+        "{}",
+        reg.render_template("Hello {{name}}", &json!({"name": "foo"}))?
+    );
+
+    // register template using given name
+    reg.register_template_string("tpl_1", "Good afternoon, {{name}}")?
+    println!("{}", reg.render("tpl_1", &json!({"name": "foo"}))?);
+
 
     let template = IndexTemplate { certificate: certificate }.render().unwrap();
 

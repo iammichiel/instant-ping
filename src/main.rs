@@ -1,8 +1,9 @@
 extern crate actix;
 extern crate actix_web;
 #[macro_use]
-extern crate askama;
 extern crate futures;
+
+extern crate handlebars;
 
 extern crate openssl;
 extern crate openssl_probe;

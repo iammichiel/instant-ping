@@ -16,17 +16,18 @@
             <div class="result">
                 {# <!-- <dt>Subject name : </dt>
                 <dd>
-                    {% for entry in cert.subject_name().entries() %}
+                    {% for entry in cert.clone().subject_name().entries() %}
                         <li>{{ entry }}</li>
                     {% endfor %}
                 </dd> -->
                 #}
-                
+
+                {# <strong>{{ entry.clone().object() }}</strong> : {{ entry.clone().data().as_utf8().unwrap() }} #}
                 
                 <dt>Issuer name : </dt>
                 {% for entry in cert.issuer_name().entries() %}
                     <li>
-                        {# <strong>{{ entry.object() }}</strong> : {{ entry.data().as_utf8().unwrap() }} #}
+                        
                     </li>
                 {% endfor %}
             
