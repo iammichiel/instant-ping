@@ -13,23 +13,15 @@
 
     {% match certificate %}
         {% when Some with (cert) %}
-            <div class="result">
-                {# <!-- <dt>Subject name : </dt>
-                <dd>
-                    {% for entry in cert.clone().subject_name().entries() %}
-                        <li>{{ entry }}</li>
-                    {% endfor %}
-                </dd> -->
-                #}
-
-                {# <strong>{{ entry.clone().object() }}</strong> : {{ entry.clone().data().as_utf8().unwrap() }} #}
-                
+            <div class="result">    
                 <dt>Issuer name : </dt>
+                {# 
                 {% for entry in cert.issuer_name().entries() %}
                     <li>
                         
                     </li>
                 {% endfor %}
+                #}
             
                 <dt>Not before : </dt>
                 <dd>{{ cert.not_before() }}</dd>

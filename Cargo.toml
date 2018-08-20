@@ -6,13 +6,10 @@ authors = ["Michiel Missotten <michiel@ouistock.fr>"]
 [dependencies]
 actix = "0.7"
 actix-web = "0.7"
-handlebars = "1.0"
 askama = "0.7"
 futures = "0.1.23"
 
 dotenv = "0.13"
-handlebars = "1.0"
-
 log = "0.4.0"
 env_logger = "0.5"
 

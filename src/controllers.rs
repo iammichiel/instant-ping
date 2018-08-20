@@ -5,13 +5,21 @@ use actix_web::Form;
 use openssl::ssl::SslConnector;
 use openssl::ssl::SslMethod;
 use openssl::x509::X509;
+
 use std::net::TcpStream;
+
+use askama::Template;
 
 #[derive(Deserialize)]
 pub struct DomainForm {
     domain: String,
 }
 
+#[derive(Template)]
+#[template(path = "index.html")]
+pub struct IndexTemplate {
+    certificate: Option<X509>
+}
 
 /**
  * Show the index page. 
@@ -28,6 +36,16 @@ pub fn index(_req: &HttpRequest) -> HttpResponse {
 pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResponse {
     let certificate = get_certificate_info(params.domain.clone());
     
+    match certificate {
+        Some(cert) => {
+            for (_loop_index, entry) in &cert.issuer_name().entries().into_iter() {
+
+            }
+        }, 
+        None => ()
+    }
+    
+
     // if certificate.is_some() {
     //     let cert = certificate.unwrap();
     //     let entries = cert.issuer_name().entries();
@@ -36,19 +54,6 @@ pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResp
     //         println!("{} : {}", entry.object(), entry.data().as_utf8().unwrap());
     //     })
     // }
-
-
-
-    let mut reg = Handlebars::new();
-    // render without register
-    println!(
-        "{}",
-        reg.render_template("Hello {{name}}", &json!({"name": "foo"}))?
-    );
-
-    // register template using given name
-    reg.register_template_string("tpl_1", "Good afternoon, {{name}}")?
-    println!("{}", reg.render("tpl_1", &json!({"name": "foo"}))?);
 
 
     let template = IndexTemplate { certificate: certificate }.render().unwrap();
