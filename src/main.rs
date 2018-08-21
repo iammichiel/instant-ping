@@ -1,10 +1,11 @@
 extern crate actix;
 extern crate actix_web;
-#[macro_use]
 extern crate futures;
 
+extern crate handlebars;
+extern crate serde;
 #[macro_use]
-extern crate askama;
+extern crate serde_json;
 
 extern crate openssl;
 extern crate openssl_probe;
@@ -24,8 +25,9 @@ use actix_web::server;
 
 use dotenv::dotenv;
 
-pub mod actors;
-pub mod controllers;
+mod actors;
+mod controllers;
+mod templates;
 
 fn main() {
     openssl_probe::init_ssl_cert_env_vars();

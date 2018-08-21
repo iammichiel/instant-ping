@@ -8,26 +8,28 @@ use openssl::x509::X509;
 
 use std::net::TcpStream;
 
-use askama::Template;
+use handlebars::Handlebars;
 
 #[derive(Deserialize)]
 pub struct DomainForm {
     domain: String,
 }
 
-#[derive(Template)]
-#[template(path = "index.html")]
-pub struct IndexTemplate {
-    certificate: Option<X509>
-}
-
 /**
  * Show the index page. 
  */
 pub fn index(_req: &HttpRequest) -> HttpResponse {
-    let template = IndexTemplate { certificate: None }.render().unwrap();
+    let mut handlebars = Handlebars::new();
+    handlebars.register_template_file("index", "./templates/index.hbs");
 
-    HttpResponse::Ok().body(template)
+
+    let content = handlebars.render("index", &json!({})).unwrap();
+
+
+
+    // let template = IndexTemplate { certificate: None }.render().unwrap();
+
+    HttpResponse::Ok().body(content)
 }
 
 /**
@@ -35,9 +37,9 @@ pub fn index(_req: &HttpRequest) -> HttpResponse {
  */
 pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResponse {
     let certificate = get_certificate_info(params.domain.clone());
-    let template = IndexTemplate { certificate: certificate }.render().unwrap();
+    // let template = IndexTemplate { certificate: certificate }.render().unwrap();
 
-    HttpResponse::Ok().body(template)
+    HttpResponse::Ok().body("OK")
 }
 
 /**
