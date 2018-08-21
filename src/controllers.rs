@@ -35,27 +35,6 @@ pub fn index(_req: &HttpRequest) -> HttpResponse {
  */
 pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResponse {
     let certificate = get_certificate_info(params.domain.clone());
-    
-    match certificate {
-        Some(cert) => {
-            for (_loop_index, entry) in &cert.issuer_name().entries().into_iter() {
-
-            }
-        }, 
-        None => ()
-    }
-    
-
-    // if certificate.is_some() {
-    //     let cert = certificate.unwrap();
-    //     let entries = cert.issuer_name().entries();
-    //     entries.for_each(|entry| {
-
-    //         println!("{} : {}", entry.object(), entry.data().as_utf8().unwrap());
-    //     })
-    // }
-
-
     let template = IndexTemplate { certificate: certificate }.render().unwrap();
 
     HttpResponse::Ok().body(template)
