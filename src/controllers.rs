@@ -4,11 +4,12 @@ use actix_web::Form;
 
 use openssl::ssl::SslConnector;
 use openssl::ssl::SslMethod;
+use openssl::x509::X509;
 
 use std::net::TcpStream;
+use std::collections::HashMap;
 
 use askama::Template;
-use models::CertificateInformation;
 
 #[derive(Deserialize)]
 pub struct DomainForm {
@@ -19,6 +20,15 @@ pub struct DomainForm {
 #[template(path = "index.html")]
 pub struct IndexTemplate {
     certificate: Option<CertificateInformation>
+}
+
+pub struct CertificateInformation {
+    pub domain: String,
+    pub not_before: String, 
+    pub not_after: String, 
+    pub issuer_name: HashMap<String, String>,
+    pub subject_name:  HashMap<String, String>, 
+    pub original: X509
 }
 
 /**
@@ -54,27 +64,34 @@ fn get_certificate_info(domain: String) -> Option<CertificateInformation> {
 
     let certificate = ssl.peer_certificate();
 
-    let t = certificate.clone().unwrap();
-    t.subject_name().entries().for_each(|entry| {
-        println!("Subject : {} : {}", entry.object(), entry.data().as_utf8().unwrap());
-    });
-
-    t.issuer_name().entries().for_each(|entry| {
-        println!("Issuer : {} : {}", entry.object(), entry.data().as_utf8().unwrap());
-    });
-
     match certificate {
         Some(cert) => {
+            let mut subject_name:HashMap<String, String> = HashMap::new();
+            let mut issuer_name:HashMap<String, String> = HashMap::new();
+
+            cert.subject_name().entries().for_each(|entry| {
+                subject_name.insert(
+                    entry.object().to_string(), 
+                    entry.data().as_utf8().unwrap().to_string()
+                );
+            });
+
+            cert.issuer_name().entries().for_each(|entry| {
+                issuer_name.insert(
+                    entry.object().to_string(), 
+                    entry.data().as_utf8().unwrap().to_string()
+                );
+            });
+
             Some(CertificateInformation {
                 domain: domain,
                 not_before: format!("{}", cert.not_before()), 
                 not_after: format!("{}", cert.not_after()), 
-                issuer_name: String::from("QWD"), 
-                subject_name: String::from("wqd"), 
+                issuer_name: issuer_name, 
+                subject_name: subject_name, 
                 original: cert
             })  
-        }, 
+        }
         None => None
     }
-    
 }

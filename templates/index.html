@@ -13,18 +13,21 @@
 
     {% match certificate %}
         {% when Some with (cert) %}
-            <div class="result">    
-                <dt>Issuer name : </dt>
+                          
 
-                {% for entry in cert.original.subject_name().entries() %}
-
-                {% endfor %}
-                           
+            <div class="result">                  
                 <dt>Not before : </dt>
                 <dd>{{ cert.not_before }}</dd>
 
                 <dt>Not after</dt>
                 <dd>{{ cert.not_after }}</dd>
+            </div>
+
+            <div class="result">
+                {% for entry in cert.issuer_name %}
+                    <dt>{{ entry.0 }}</dt>
+                    <dd>{{ entry.1 }}</dd>
+                {% endfor %}
             </div>
         {% when None %}
     {% endmatch %}
