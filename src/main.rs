@@ -38,7 +38,7 @@ fn main() {
                 r.method(http::Method::GET).f(controllers::index);
                 r.method(http::Method::POST).with(controllers::handle_post);
             })
-            // .handler("/public", fs::StaticFiles::new("web/dist").unwrap())
+            .handler("/public", fs::StaticFiles::new("web/dist").unwrap())
         )
         .bind("127.0.0.1:8088")
         .unwrap()
