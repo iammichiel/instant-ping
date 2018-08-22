@@ -1,6 +1,5 @@
 extern crate actix;
 extern crate actix_web;
-#[macro_use]
 extern crate futures;
 
 #[macro_use]
@@ -25,6 +24,7 @@ use actix_web::server;
 use dotenv::dotenv;
 
 pub mod actors;
+pub mod models;
 pub mod controllers;
 
 fn main() {

@@ -4,11 +4,11 @@ use actix_web::Form;
 
 use openssl::ssl::SslConnector;
 use openssl::ssl::SslMethod;
-use openssl::x509::X509;
 
 use std::net::TcpStream;
 
 use askama::Template;
+use models::CertificateInformation;
 
 #[derive(Deserialize)]
 pub struct DomainForm {
@@ -18,7 +18,7 @@ pub struct DomainForm {
 #[derive(Template)]
 #[template(path = "index.html")]
 pub struct IndexTemplate {
-    certificate: Option<X509>
+    certificate: Option<CertificateInformation>
 }
 
 /**
@@ -43,7 +43,7 @@ pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResp
 /**
  * Try to establish a connection to the remote domain
  */
-fn get_certificate_info(domain: String) -> Option<X509> {
+fn get_certificate_info(domain: String) -> Option<CertificateInformation> {
     let formatted_domain = format!("{}:443", domain);
     // TODO All unwrap should be handled. 
     let connector = SslConnector::builder(SslMethod::tls()).unwrap().build(); 
@@ -52,5 +52,29 @@ fn get_certificate_info(domain: String) -> Option<X509> {
     
     let ssl = connection.ssl();
 
-    ssl.peer_certificate()
+    let certificate = ssl.peer_certificate();
+
+    let t = certificate.clone().unwrap();
+    t.subject_name().entries().for_each(|entry| {
+        println!("Subject : {} : {}", entry.object(), entry.data().as_utf8().unwrap());
+    });
+
+    t.issuer_name().entries().for_each(|entry| {
+        println!("Issuer : {} : {}", entry.object(), entry.data().as_utf8().unwrap());
+    });
+
+    match certificate {
+        Some(cert) => {
+            Some(CertificateInformation {
+                domain: domain,
+                not_before: format!("{}", cert.not_before()), 
+                not_after: format!("{}", cert.not_after()), 
+                issuer_name: String::from("QWD"), 
+                subject_name: String::from("wqd"), 
+                original: cert
+            })  
+        }, 
+        None => None
+    }
+    
 }
