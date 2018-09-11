@@ -1,4 +1,5 @@
 use actix_web::HttpRequest;
+use actix_web::FutureResponse;
 use actix_web::HttpResponse;
 use actix_web::Form;
 
@@ -10,6 +11,13 @@ use std::net::TcpStream;
 use std::collections::HashMap;
 
 use askama::Template;
+
+use actix::prelude::Arbiter;
+use actix::prelude::Request;
+use futures::Future;
+
+use AppState;
+use actors::CheckCertificateMessage;
 
 #[derive(Deserialize)]
 pub struct DomainForm {
@@ -34,16 +42,26 @@ pub struct CertificateInformation {
 /**
  * Show the index page. 
  */
-pub fn index(_req: &HttpRequest) -> HttpResponse {
+pub fn index(req: &HttpRequest<AppState>) -> FutureResponse<HttpResponse> {
     let template = IndexTemplate { certificate: None }.render().unwrap();
 
-    HttpResponse::Ok().body(template)
+    println!("{}", req.state().name);
+    req.state()
+        .address
+        .send(CheckCertificateMessage{ domain: "www.google.fr".to_string() })
+        .from_err()
+        .and_then(|result| {
+            println!("SUCCESS");
+
+            Ok(HttpResponse::Ok().body(template))
+        })
+        .responder()
 }
 
 /**
  * Get the requested domain from the form and run it through the certificate checker.
  */
-pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResponse {
+pub fn handle_post((_req, params): (HttpRequest<AppState>, Form<DomainForm>),) -> HttpResponse {
     let certificate = get_certificate_info(params.domain.clone());
     let template = IndexTemplate { certificate: certificate }.render().unwrap();
 
@@ -72,7 +90,7 @@ fn get_certificate_info(domain: String) -> Option<CertificateInformation> {
             cert.subject_name().entries().for_each(|entry| {
                 subject_name.insert(
                     entry.object().to_string(), 
-                    entry.data().as_utf8().unwrap().to_string()
+                    entry.data().as_utf8().unwrap().to_string() 
                 );
             });
 

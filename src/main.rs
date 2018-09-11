@@ -21,29 +21,44 @@ use actix_web::http;
 use actix_web::middleware;
 use actix_web::server;
 
+use actix::prelude::*;
+
+use actix::Addr;
+
 use dotenv::dotenv;
 
 mod actors;
 mod controllers;
+
+
+pub struct AppState {
+    pub name: String, 
+    pub address: Addr<actors::CertificateCheckActor>
+}
 
 fn main() {
     openssl_probe::init_ssl_cert_env_vars();
     dotenv().ok();
     env_logger::init();
 
-    server::new(|| 
-        App::new()
+    let system = actix::System::new("instant-ping");
+      
+    server::new(move || {
+        App::with_state( 
+            AppState {
+                name: "MCHIE".to_string(), 
+                address: actors::CertificateCheckActor{}.start()
+            })
             .middleware(middleware::Logger::default())
             .resource("/", |r| {
                 r.method(http::Method::GET).f(controllers::index);
                 r.method(http::Method::POST).with(controllers::handle_post);
             })
             .handler("/public", fs::StaticFiles::new("web/dist").unwrap())
-        )
+        })
         .bind("127.0.0.1:8088")
         .unwrap()
-        .run();
+        .start();
 
-    // Start the async actors
-    // actors::start_system();
+    let _ = system.run();
 }
