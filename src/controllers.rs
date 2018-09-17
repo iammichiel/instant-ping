@@ -50,6 +50,19 @@ pub fn handle_post((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResp
     HttpResponse::Ok().body(template)
 }
 
+pub fn create_dashboard((_req, params): (HttpRequest, Form<DomainForm>),) -> HttpResponse {
+
+
+
+    HttpResponse::TemporaryRedirect()
+        .header("Location", "http://www.google.fr?q=coucou")
+        .finish()
+}
+
+pub fn show_dashboard(_req: &HttpRequest) -> HttpResponse {
+    HttpResponse::Ok().body("YOLO")
+}
+
 /**
  * Try to establish a connection to the remote domain
  */

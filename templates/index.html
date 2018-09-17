@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block body %}
-    <h1><a href="/"></a>Check my domain</a></h1>
+    <h1><a href="/"></a>Check my SSL</a></h1>
 
     <form action="/" method="post">
         <input name="domain" type="text" placeholder="www.google.com" required>
@@ -38,6 +38,11 @@
                 <dd>{{ entry.1 }}</dd>
             </dl> 
             {% endfor %}
+
+            <form action="/dashboard" method="POST">
+                <input type="hidden" name="domain" value={domain}>
+                <button>Create dashboard</button>
+            </form>
 
         {% when None %}
     {% endmatch %}
