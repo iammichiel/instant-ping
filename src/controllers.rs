@@ -1,4 +1,4 @@
-use actix_web::Form;
+use actix_web::web::Form;
 use actix_web::HttpRequest;
 use actix_web::HttpResponse;
 
@@ -34,7 +34,7 @@ pub struct CertificateInformation {
 /**
  * Show the index page.
  */
-pub fn index(_req: &HttpRequest) -> HttpResponse {
+pub fn index(_req: HttpRequest) -> HttpResponse {
     let template = IndexTemplate { certificate: None }.render().unwrap();
 
     HttpResponse::Ok().body(template)
