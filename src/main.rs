@@ -1,17 +1,12 @@
 extern crate actix;
 extern crate actix_web;
 extern crate futures;
-
-#[macro_use]
 extern crate askama;
-
 extern crate openssl;
 extern crate openssl_probe;
-
 extern crate dotenv;
 extern crate env_logger;
 extern crate log;
-
 #[macro_use]
 extern crate serde_derive;
 
