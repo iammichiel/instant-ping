@@ -38,7 +38,7 @@
 //     fn handle(&mut self, msg: CheckCertificateMessage, ctx: &mut Context<Self>) -> Self::Result {
 
 //         let formatted_domain = format!("{}:443", msg.domain);
-// //     let connector = SslConnector::builder(SslMethod::tls()).unwrap().build(); 
+// //     let connector = SslConnector::builder(SslMethod::tls()).unwrap().build();
 // //     let stream = TcpStream::connect(formatted_domain).unwrap();
 // //     let connection = connector.connect(&domain, stream).unwrap();
 
@@ -62,4 +62,3 @@
 
 //     system.run();
 // }
- 

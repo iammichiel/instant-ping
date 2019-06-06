@@ -9,17 +9,17 @@ extern crate openssl;
 extern crate openssl_probe;
 
 extern crate dotenv;
-extern crate log;
 extern crate env_logger;
+extern crate log;
 
 #[macro_use]
 extern crate serde_derive;
 
-use actix_web::App;
 use actix_web::fs;
 use actix_web::http;
 use actix_web::middleware;
 use actix_web::server;
+use actix_web::App;
 
 use dotenv::dotenv;
 
@@ -31,7 +31,7 @@ fn main() {
     dotenv().ok();
     env_logger::init();
 
-    server::new(|| 
+    server::new(|| {
         App::new()
             .middleware(middleware::Logger::default())
             .resource("/", |r| {
@@ -39,10 +39,10 @@ fn main() {
                 r.method(http::Method::POST).with(controllers::handle_post);
             })
             .handler("/public", fs::StaticFiles::new("web/dist").unwrap())
-        )
-        .bind("127.0.0.1:8088")
-        .unwrap()
-        .run();
+    })
+    .bind("127.0.0.1:8088")
+    .unwrap()
+    .run();
 
     // Start the async actors
     // actors::start_system();
