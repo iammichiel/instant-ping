@@ -25,6 +25,6 @@ fn main() -> std::io::Result<()> {
         )
         .service(fs::Files::new("/public", "web/dist"))
     )
-    .bind("127.0.0.1:8088")?
+    .bind("0.0.0.0:8080")?
     .run()
 }
