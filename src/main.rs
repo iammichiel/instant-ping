@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
             .route(web::get().to(controllers::index))
             .route(web::post().to(controllers::handle_post))
         )
-        // .service(fs::Files::new("/public", "web/dist"))
+        .service(fs::Files::new("/public", "web/"))
     )
     .bind(format!("0.0.0.0:{}", port))?
     .run()

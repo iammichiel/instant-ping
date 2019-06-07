@@ -3,3 +3,6 @@
 /web/node_modules
 /web/dist
 .env
+/node_modules
+.clever.json
+/web
