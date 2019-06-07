@@ -17,7 +17,7 @@ fn main() -> std::io::Result<()> {
     dotenv().ok();
     env_logger::init();
 
-    let port = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let port = dotenv::var("PORT").expect("DATABASE_URL must be set");
 
     HttpServer::new(|| App::new()
         .wrap(Logger::default())
@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
             .route(web::get().to(controllers::index))
             .route(web::post().to(controllers::handle_post))
         )
-        .service(fs::Files::new("/public", "web/dist"))
+        // .service(fs::Files::new("/public", "web/dist"))
     )
     .bind(format!("0.0.0.0:{}", port))?
     .run()
